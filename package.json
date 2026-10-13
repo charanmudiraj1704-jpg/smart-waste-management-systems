@@ -1,0 +1,25 @@
+{
+  "name": "cleanpulse-smart-waste-management",
+  "version": "1.0.0",
+  "description": "MERN-based Smart Waste Management System with DAA Route Optimization & Garbage Tracking",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "optimize": "python optimizer.py"
+  },
+  "keywords": [
+    "mern",
+    "smart-waste-management",
+    "daa-algorithm",
+    "tsp",
+    "nearest-neighbor",
+    "route-optimization"
+  ],
+  "author": "EcoTrack / CleanPulse",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

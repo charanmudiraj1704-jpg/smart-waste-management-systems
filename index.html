@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CleanPulse - Smart Waste Management & DAA Route Tracker</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="file:///C:/Users/SRI%20CHARAN/OneDrive/Documents/BWT(HACKTHON)/index.html>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],  
+          },
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+            },
+            eco: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Cool White Aesthetic Styles */
+    body {
+      background-color: #f8fafc;
+      background-image: 
+        radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.04) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(16, 185, 129, 0.04) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(241, 245, 249, 0.6) 0px, transparent 100%);
+      color: #0f172a;
+    }
+
+    .cool-card {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+      backdrop-filter: blur(8px);
+    }
+
+    .cool-card-elevated {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
+    }
+
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Pulse animation for active simulation */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse-ring {
+      animation: pulse-ring 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen font-sans text-slate-800 antialiased flex flex-col">
+
+  <!-- TOP COOL-WHITE NAVIGATION BAR -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-sky-500 to-eco-500 flex items-center justify-center text-white shadow-sm shadow-sky-500/20">
+          <i data-lucide="trash-2" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-xl font-bold tracking-tight text-slate-900">Clean<span class="text-brand-600">Pulse</span></span>
+            <span class="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">DAA Core</span>
+          </div>
+          <p class="text-xs text-slate-500 hidden sm:block">Smart Municipal Waste Reporting & Collection Tracker</p>
+        </div>
+      </div>
+
+      <!-- Live Operations Status & Nav Pills -->
+      <div class="flex items-center space-x-3">
+        <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-xs font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Municipal Fleet Active</span>
+        </div>
+        
+        <button id="btnViewDocs" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold shadow-sm transition">
+          <i data-lucide="file-text" class="w-4 h-4 text-slate-500"></i>
+          <span>DAA Docs</span>
+        </button>
+
+        <a href="#report-section" class="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-sm shadow-brand-500/20 transition">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>Report Garbage</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- METRICS OVERVIEW BAR (COOL WHITE THEME) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="cool-card p-4 rounded-2xl flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center border border-sky-100">
+          <i data-lucide="alert-circle" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Active Reports</p>
+          <h3 id="statTotalReports" class="text-xl font-bold text-slate-900">6</h3>
+        </div>
+      </div>
+
+      <div class="cool-card p-4 rounded-2xl flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
+          <i data-lucide="truck" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Pending Pickup</p>
+          <h3 id="statPendingPickup" class="text-xl font-bold text-slate-900">4</h3>
+        </div>
+      </div>
+
+      <div class="cool-card p-4 rounded-2xl flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+          <i data-lucide="check-check" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Collected Today</p>
+          <h3 id="statCollectedToday" class="text-xl font-bold text-slate-900">2</h3>
+        </div>
+      </div>
+
+      <div class="cool-card p-4 rounded-2xl flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100">
+          <i data-lucide="trending-up" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">DAA Fuel Saved</p>
+          <h3 id="statFuelSaved" class="text-xl font-bold text-slate-900">10.3%</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID: LEFT (REPORT & TRACK) | RIGHT (DAA ROUTE OPTIMIZER & SIMULATION) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- LEFT COLUMN: REPORT FORM & TRACKING FEED (7 COLS) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- SECTION 1: CITIZEN WASTE REPORT FORM -->
+        <div id="report-section" class="cool-card-elevated rounded-2xl p-5 sm:p-6 border border-slate-200">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-5">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center">
+                <i data-lucide="map-pin" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h2 class="text-base font-bold text-slate-900">Report Garbage Overflow</h2>
+                <p class="text-xs text-slate-500">Citizen alert for municipal trash collection and clearance</p>
+              </div>
+            </div>
+            <span class="text-xs font-medium text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-100">Instant Dispatch</span>
+          </div>
+
+          <form id="garbageReportForm" class="space-y-4">
+            <!-- Location Name & Coordinates Selection -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Location / Neighborhood</label>
+              <div class="relative">
+                <input type="text" id="reportLocation" required placeholder="e.g. Sector 7 Market or Central Park West"
+                  class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
+              </div>
+              <!-- Quick Location Presets -->
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <span class="text-[11px] text-slate-500 mr-1 self-center">Presets:</span>
+                <button type="button" onclick="setPresetLocation('Sector 9 Tech Park', 14.5, 8.2)" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 transition">Tech Park (14.5, 8.2)</button>
+                <button type="button" onclick="setPresetLocation('Harbor Pier Terminal', 5.5, 15.8)" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 transition">Harbor Pier (5.5, 15.8)</button>
+                <button type="button" onclick="setPresetLocation('Hilltop Community Hub', 17.2, 16.5)" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 transition">Hilltop Hub (17.2, 16.5)</button>
+              </div>
+            </div>
+
+            <!-- Grid Coordinates (Simulated GPS X, Y) -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Grid X (km offset)</label>
+                <input type="number" step="0.1" id="reportCoordX" value="13.2" required
+                  class="w-full text-sm px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Grid Y (km offset)</label>
+                <input type="number" step="0.1" id="reportCoordY" value="12.8" required
+                  class="w-full text-sm px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+              </div>
+            </div>
+
+            <!-- Waste Type & Urgency Level -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Waste Category</label>
+                <select id="reportCategory" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                  <option value="Organic">Organic / Food Waste</option>
+                  <option value="Recyclable">Dry Recyclable (Plastic, Cardboard)</option>
+                  <option value="Hazardous">Hazardous / Chemical</option>
+                  <option value="Mixed">Mixed Bulk Litter</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Urgency / Fill Status</label>
+                <select id="reportUrgency" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                  <option value="Critical">Critical (100% Overflowing)</option>
+                  <option value="Moderate">Moderate (60% Full)</option>
+                  <option value="Low">Low (25-40% Full)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Estimated Volume and Image simulation -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Estimated Volume (kg)</label>
+                <input type="number" id="reportWeight" value="150" min="10" max="2000"
+                  class="w-full text-sm px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Evidence Photo Mock</label>
+                <div class="flex items-center space-x-2">
+                  <span class="inline-flex items-center px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-600">
+                    <i data-lucide="camera" class="w-4 h-4 mr-1 text-slate-400"></i> geo-waste-snap.jpg
+                  </span>
+                  <span class="text-[11px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-1 rounded">Verified</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white text-sm font-semibold shadow-sm flex items-center justify-center space-x-2 transition">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span>Dispatch Garbage Report</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- SECTION 2: LIVE GARBAGE COLLECTION TRACKER -->
+        <div class="cool-card-elevated rounded-2xl p-5 sm:p-6 border border-slate-200">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
+            <div>
+              <h2 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                <span>Garbage Collection Feed & Tracker</span>
+                <span id="badgeActiveCount" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold">6 items</span>
+              </h2>
+              <p class="text-xs text-slate-500">Monitor reported bins and track municipal truck collection status</p>
+            </div>
+
+            <!-- Filter Pills -->
+            <div class="flex items-center space-x-1.5 self-start sm:self-auto">
+              <button onclick="filterReports('ALL')" id="filterAll" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white transition">All</button>
+              <button onclick="filterReports('PENDING')" id="filterPending" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Pending</button>
+              <button onclick="filterReports('IN_TRANSIT')" id="filterTransit" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">In Transit</button>
+              <button onclick="filterReports('COLLECTED')" id="filterCollected" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Collected</button>
+            </div>
+          </div>
+
+          <!-- Report Items List -->
+          <div id="reportsContainer" class="divide-y divide-slate-100 max-h-[460px] overflow-y-auto pr-1 mt-2">
+            <!-- Populated via JavaScript -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: DAA ROUTE OPTIMIZATION ENGINE & VISUAL MAP (5 COLS) -->
+      <div class="lg:col-span-5 space-y-6">
+
+        <!-- DAA ENGINE CARD -->
+        <div class="cool-card-elevated rounded-2xl p-5 sm:p-6 border border-slate-200">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <i data-lucide="cpu" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-slate-900">DAA Route Optimizer</h3>
+                <p class="text-xs text-slate-500">Greedy Nearest Neighbor + 2-Opt Heuristic</p>
+              </div>
+            </div>
+            <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">O(N²) DAA</span>
+          </div>
+
+          <!-- Interactive Action Buttons -->
+          <div class="flex items-center space-x-2 pt-3">
+            <button id="btnRunOptimizer" onclick="executeDAAOptimizer()" class="flex-1 py-2 px-3 rounded-xl bg-brand-600 hover:bg-brand-700 active:scale-[0.99] text-white text-xs font-semibold shadow-sm shadow-brand-500/20 flex items-center justify-center space-x-1.5 transition">
+              <i data-lucide="zap" class="w-4 h-4"></i>
+              <span>Run DAA Optimizer</span>
+            </button>
+            <button id="btnSimulateTruck" onclick="simulateGarbageCollectionRun()" class="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white text-xs font-semibold shadow-sm shadow-emerald-500/20 flex items-center justify-center space-x-1.5 transition">
+              <i data-lucide="play" class="w-4 h-4"></i>
+              <span>Simulate Truck</span>
+            </button>
+          </div>
+
+          <!-- MAP CANVAS -->
+          <div class="mt-4 relative bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden">
+            <div class="absolute top-2.5 left-2.5 z-10 flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md border border-slate-200 text-[11px] text-slate-600 font-medium">
+              <span class="w-2 h-2 rounded-full bg-blue-600 inline-block"></span> <span>Depot (10, 10)</span>
+              <span class="w-2 h-2 rounded-full bg-rose-500 inline-block ml-1"></span> <span>Critical Bin</span>
+              <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block ml-1"></span> <span>Collected</span>
+            </div>
+
+            <canvas id="routeCanvas" width="500" height="340" class="w-full h-[320px] cursor-crosshair block"></canvas>
+            
+            <div id="truckStatusBanner" class="absolute bottom-2 left-2 right-2 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-700 flex items-center justify-between shadow-sm">
+              <span id="truckStatusText" class="font-medium flex items-center">
+                <i data-lucide="navigation" class="w-3.5 h-3.5 mr-1.5 text-brand-600"></i> Standby at Central Depot
+              </span>
+              <span id="truckDistanceText" class="font-mono text-slate-500 font-semibold">0.0 km</span>
+            </div>
+          </div>
+
+          <!-- OPTIMIZATION METRICS COMPARISON -->
+          <div class="mt-4 grid grid-cols-3 gap-2 text-center">
+            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <span class="text-[10px] uppercase font-bold text-slate-400 block">Naive Path</span>
+              <span id="metricNaiveDist" class="text-sm font-bold text-slate-700 font-mono">36.3 km</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800">
+              <span class="text-[10px] uppercase font-bold text-emerald-600 block">DAA Tour</span>
+              <span id="metricOptDist" class="text-sm font-bold font-mono">32.6 km</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-sky-50 border border-sky-200 text-sky-800">
+              <span class="text-[10px] uppercase font-bold text-sky-600 block">Distance Saved</span>
+              <span id="metricSaved" class="text-sm font-bold font-mono">3.7 km (10%)</span>
+            </div>
+          </div>
+
+          <!-- DAA ALGORITHM EXECUTION TRACE -->
+          <div class="mt-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center">
+                <i data-lucide="terminal" class="w-3.5 h-3.5 mr-1.5 text-slate-500"></i> DAA Step-by-Step Decision Trace
+              </span>
+              <span class="text-[10px] text-slate-500 font-mono">Greedy + 2-Opt</span>
+            </div>
+            <div id="daaTraceContainer" class="p-3 bg-slate-900 text-slate-200 rounded-xl font-mono text-[11px] h-36 overflow-y-auto space-y-1.5 border border-slate-800">
+              <div class="text-emerald-400">> DAA Engine Initialized. Ready for route optimization.</div>
+              <div class="text-slate-400">> Click 'Run DAA Optimizer' to compute the shortest Hamiltonian tour.</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PYTHON ENGINE CONNECTOR CARD -->
+        <div class="cool-card rounded-2xl p-4 border border-slate-200 flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200">
+              <i data-lucide="code-2" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-slate-900">Python DAA Engine: <span class="font-mono text-brand-600">optimizer.py</span></h4>
+              <p class="text-[11px] text-slate-500">Run in terminal: <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">python optimizer.py</code></p>
+            </div>
+          </div>
+          <button onclick="showPythonModal()" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-sm transition">
+            View Code
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto border-t border-slate-200/80 bg-white py-5 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>CleanPulse Smart Waste Management &bull; Built with MERN Architecture & DAA Algorithms</p>
+      <div class="flex items-center space-x-4">
+        <span>Time Complexity: $\mathcal{O}(N^2)$</span>
+        <span>&bull;</span>
+        <span>Space: $\mathcal{O}(N)$</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL: DAA DOCUMENTATION & EXPLANATION -->
+  <div id="docsModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 border border-slate-200 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+          <i data-lucide="book-open" class="w-5 h-5 text-brand-600"></i>
+          <span>DAA Algorithm & Problem Statement Documentation</span>
+        </h3>
+        <button onclick="closeModal('docsModal')" class="text-slate-400 hover:text-slate-700 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      
+      <div class="space-y-3 text-xs leading-relaxed text-slate-600">
+        <div>
+          <h4 class="font-bold text-slate-900 text-sm mb-1">1. Problem Statement</h4>
+          <p>Uncoordinated municipal garbage collection leads to overflowing bins, citizen hygiene issues, fuel waste, and high carbon emissions. This system solves two core challenges: allowing citizens to report overflowing waste with location/photo data, and tracking collection trucks dispatched via an optimal path.</p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-slate-900 text-sm mb-1">2. DAA Algorithm (Traveling Salesperson & 2-Opt)</h4>
+          <p>Routing garbage trucks through $N$ collection nodes is an instance of the <strong>Vehicle Routing Problem (VRP)</strong>, an NP-Hard problem with $\mathcal{O}(N!)$ brute-force complexity. We implement:</p>
+          <ul class="list-disc list-inside space-y-1 mt-1 pl-2 text-slate-700 font-mono">
+            <li><strong>Greedy Nearest Neighbor:</strong> Chooses the closest unvisited bin at each step ($\mathcal{O}(N^2)$ time, $\mathcal{O}(N)$ space). Priority is given to bins marked 'Critical'.</li>
+            <li><strong>2-Opt Local Search:</strong> Iteratively uncrosses crossing paths by reversing tour segments until no distance reduction is possible ($\mathcal{O}(K \cdot N^2)$).</li>
+            <li><strong>Dijkstra's Algorithm:</strong> Finds shortest street paths between junctions ($\mathcal{O}((V+E)\log V)$).</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-slate-900 text-sm mb-1">3. MERN Stack Integration</h4>
+          <p><strong>MongoDB</strong> stores reports and coordinate waypoints; <strong>Express & Node.js</strong> provide REST API routes; <strong>Frontend</strong> provides an interactive cool-white citizen tracker & route visualizer; and <strong>Python</strong> delivers the high-speed DAA routing engine.</p>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex justify-end">
+        <button onclick="closeModal('docsModal')" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-semibold hover:bg-slate-800 transition">
+          Close Window
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PYTHON ENGINE CODE PREVIEW -->
+  <div id="pythonModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 border border-slate-200 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+          <i data-lucide="terminal" class="w-5 h-5 text-amber-500"></i>
+          <span>Python DAA Optimizer Implementation (`optimizer.py`)</span>
+        </h3>
+        <button onclick="closeModal('pythonModal')" class="text-slate-400 hover:text-slate-700 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="bg-slate-900 text-slate-200 p-4 rounded-xl font-mono text-xs overflow-x-auto max-h-[60vh]">
+<pre><code># DAA Nearest Neighbor + 2-Opt Algorithm in Python
+import math
+
+def euclidean_dist(p1, p2):
+    return math.hypot(p1['x'] - p2['x'], p1['y'] - p2['y'])
+
+def optimize_waste_route(depot, bins):
+    unvisited = list(bins)
+    curr = depot
+    tour = [curr]
+    
+    # 1. Greedy Nearest Neighbor (O(N^2))
+    while unvisited:
+        best_idx = 0
+        best_cost = float('inf')
+        for i, b in enumerate(unvisited):
+            dist = euclidean_dist(curr, b)
+            # Factor in urgency: Critical bins get 0.7x weight factor
+            weight = 0.7 if b['urgency'] == 'Critical' else 1.0
+            if dist * weight < best_cost:
+                best_cost = dist * weight
+                best_idx = i
+        next_bin = unvisited.pop(best_idx)
+        tour.append(next_bin)
+        curr = next_bin
+        
+    tour.append(depot)
+    return tour # Refined with 2-Opt in optimizer.py
+</code></pre>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex justify-between items-center">
+        <span class="text-xs text-slate-500">File located at: <code class="font-mono text-slate-800">./optimizer.py</code></span>
+        <button onclick="closeModal('pythonModal')" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-semibold hover:bg-slate-800 transition">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    // 1. Initial State Data: Depot and Pre-loaded Waste Reports
+    const DEPOT = { id: 'DEPOT-00', name: 'Central Municipal Depot', x: 10.0, y: 10.0, urgency: 'Depot' };
+
+    let reports = [
+      { id: 'TRK-101', name: 'Sector 4 Market', x: 12.5, y: 14.2, category: 'Organic', urgency: 'Critical', weight: 180, status: 'Pending', timestamp: '10 mins ago' },
+      { id: 'TRK-102', name: 'Green Valley Park', x: 16.0, y: 11.5, category: 'Recyclable', urgency: 'Moderate', weight: 95, status: 'In Transit', timestamp: '24 mins ago' },
+      { id: 'TRK-103', name: 'Commercial Complex B', x: 14.8, y: 17.1, category: 'Recyclable', urgency: 'Critical', weight: 220, status: 'Pending', timestamp: '35 mins ago' },
+      { id: 'TRK-104', name: 'Riverside Walkway', x: 8.2, y: 16.0, category: 'Mixed', urgency: 'Low', weight: 40, status: 'Pending', timestamp: '50 mins ago' },
+      { id: 'TRK-105', name: 'Metro Station North', x: 7.1, y: 11.8, category: 'Organic', urgency: 'Moderate', weight: 120, status: 'Collected', timestamp: '1 hr ago' },
+      { id: 'TRK-106', name: 'Old Town Plaza', x: 11.0, y: 6.5, category: 'Organic', urgency: 'Critical', weight: 260, status: 'Collected', timestamp: '1.5 hrs ago' },
+    ];
+
+    let currentFilter = 'ALL';
+    let optimizedTour = [];
+    let isSimulationRunning = false;
+
+    // Helper: Distance calculation
+    function distance(p1, p2) {
+      return Math.hypot(p1.x - p2.x, p1.y - p2.y);
+    }
+
+    // Helper: Calculate total route distance
+    function calculateTotalTourDistance(tour) {
+      if (!tour || tour.length < 2) return 0;
+      let total = 0;
+      for (let i = 0; i < tour.length - 1; i++) {
+        total += distance(tour[i], tour[i + 1]);
+      }
+      return parseFloat(total.toFixed(2));
+    }
+
+    // 2. Render Reports into List & Update Counters
+    function renderReports() {
+      const container = document.getElementById('reportsContainer');
+      container.innerHTML = '';
+
+      const filtered = reports.filter(r => {
+        if (currentFilter === 'ALL') return true;
+        if (currentFilter === 'PENDING') return r.status === 'Pending';
+        if (currentFilter === 'IN_TRANSIT') return r.status === 'In Transit';
+        if (currentFilter === 'COLLECTED') return r.status === 'Collected';
+        return true;
+      });
+
+      // Update counters
+      const totalCount = reports.length;
+      const pendingCount = reports.filter(r => r.status === 'Pending').length;
+      const collectedCount = reports.filter(r => r.status === 'Collected').length;
+
+      document.getElementById('statTotalReports').innerText = totalCount;
+      document.getElementById('statPendingPickup').innerText = pendingCount;
+      document.getElementById('statCollectedToday').innerText = collectedCount;
+      document.getElementById('badgeActiveCount').innerText = `${filtered.length} shown`;
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="py-8 text-center text-slate-400 text-xs">
+            No waste reports matching the "${currentFilter}" filter.
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(item => {
+        // Status Badge Style
+        let statusBadge = '';
+        if (item.status === 'Pending') {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">Pending</span>';
+        } else if (item.status === 'In Transit') {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-sky-50 text-sky-700 border border-sky-200 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse"></span> In Transit</span>';
+        } else {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Collected</span>';
+        }
+
+        // Urgency Tag Style
+        let urgencyBadge = '';
+        if (item.urgency === 'Critical') {
+          urgencyBadge = '<span class="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">Critical (100%)</span>';
+        } else if (item.urgency === 'Moderate') {
+          urgencyBadge = '<span class="text-[10px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100">Moderate</span>';
+        } else {
+          urgencyBadge = '<span class="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Low</span>';
+        }
+
+        const div = document.createElement('div');
+        div.className = 'py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 hover:bg-slate-50/60 p-2 rounded-xl transition';
+        div.innerHTML = `
+          <div class="flex items-start space-x-3">
+            <div class="w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center ${
+              item.status === 'Collected' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-100 text-slate-600'
+            }">
+              <i data-lucide="${item.status === 'Collected' ? 'check' : 'trash-2'}" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="text-xs font-mono font-bold text-slate-800">${item.id}</span>
+                <span class="text-xs font-semibold text-slate-900">${item.name}</span>
+                ${urgencyBadge}
+              </div>
+              <div class="flex items-center space-x-2 text-[11px] text-slate-500 mt-1">
+                <span>${item.category}</span>
+                <span>&bull;</span>
+                <span>~${item.weight} kg</span>
+                <span>&bull;</span>
+                <span>Coord: (${item.x}, ${item.y})</span>
+                <span>&bull;</span>
+                <span>${item.timestamp}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2 self-end sm:self-center">
+            ${statusBadge}
+            ${item.status !== 'Collected' ? `
+              <button onclick="advanceStatus('${item.id}')" class="px-2.5 py-1 text-xs rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition" title="Advance Collection State">
+                Update
+              </button>
+            ` : `
+              <button onclick="resetStatus('${item.id}')" class="px-2 py-1 text-[11px] rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition" title="Re-open report">
+                Reopen
+              </button>
+            `}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      lucide.createIcons();
+      drawMapCanvas();
+    }
+
+    // 3. Status State Machine
+    function advanceStatus(id) {
+      const item = reports.find(r => r.id === id);
+      if (!item) return;
+      if (item.status === 'Pending') {
+        item.status = 'In Transit';
+      } else if (item.status === 'In Transit') {
+        item.status = 'Collected';
+      }
+      renderReports();
+      executeDAAOptimizer();
+    }
+
+    function resetStatus(id) {
+      const item = reports.find(r => r.id === id);
+      if (item) {
+        item.status = 'Pending';
+        renderReports();
+        executeDAAOptimizer();
+      }
+    }
+
+    // 4. Filtering
+    function filterReports(category) {
+      currentFilter = category;
+      ['filterAll', 'filterPending', 'filterTransit', 'filterCollected'].forEach(id => {
+        const btn = document.getElementById(id);
+        btn.className = "px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+      });
+      if (category === 'ALL') document.getElementById('filterAll').className = "px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white transition";
+      if (category === 'PENDING') document.getElementById('filterPending').className = "px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white transition";
+      if (category === 'IN_TRANSIT') document.getElementById('filterTransit').className = "px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white transition";
+      if (category === 'COLLECTED') document.getElementById('filterCollected').className = "px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white transition";
+      renderReports();
+    }
+
+    // 5. Preset selection
+    function setPresetLocation(name, x, y) {
+      document.getElementById('reportLocation').value = name;
+      document.getElementById('reportCoordX').value = x;
+      document.getElementById('reportCoordY').value = y;
+    }
+
+    // 6. Citizen Report Form Submit
+    document.getElementById('garbageReportForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('reportLocation').value;
+      const x = parseFloat(document.getElementById('reportCoordX').value);
+      const y = parseFloat(document.getElementById('reportCoordY').value);
+      const category = document.getElementById('reportCategory').value;
+      const urgency = document.getElementById('reportUrgency').value;
+      const weight = parseFloat(document.getElementById('reportWeight').value) || 100;
+
+      const newId = 'TRK-' + Math.floor(100 + Math.random() * 900);
+      const newReport = {
+        id: newId,
+        name: name,
+        x: x,
+        y: y,
+        category: category,
+        urgency: urgency,
+        weight: weight,
+        status: 'Pending',
+        timestamp: 'Just now'
+      };
+
+      reports.unshift(newReport);
+      renderReports();
+      executeDAAOptimizer();
+
+      // Reset form
+      document.getElementById('reportLocation').value = '';
+      alert(`Garbage report ${newId} submitted successfully! Added to DAA routing queue.`);
+    });
+
+    // 7. DAA ALGORITHM IMPLEMENTATION (Greedy Nearest Neighbor + 2-Opt)
+    function executeDAAOptimizer() {
+      // Gather active bins requiring collection
+      const activeBins = reports.filter(r => r.status !== 'Collected');
+      const traceContainer = document.getElementById('daaTraceContainer');
+      traceContainer.innerHTML = '';
+
+      if (activeBins.length === 0) {
+        traceContainer.innerHTML = '<div class="text-emerald-400">> All reported bins collected! Fleet at Municipal Depot.</div>';
+        optimizedTour = [DEPOT];
+        drawMapCanvas();
+        return;
+      }
+
+      // Trace initial
+      addTrace(`[DAA] Starting Greedy Nearest Neighbor for ${activeBins.length} unserviced bins...`);
+      addTrace(`[DAA] Starting Vertex: Depot at (${DEPOT.x}, ${DEPOT.y})`);
+
+      // Naive distance (Order as reported)
+      const naiveTour = [DEPOT, ...activeBins, DEPOT];
+      const naiveDist = calculateTotalTourDistance(naiveTour);
+
+      // Greedy Nearest Neighbor
+      let unvisited = [...activeBins];
+      let current = DEPOT;
+      let tour = [current];
+      let step = 1;
+
+      while (unvisited.length > 0) {
+        let bestIdx = 0;
+        let bestScore = Infinity;
+
+        for (let i = 0; i < unvisited.length; i++) {
+          const candidate = unvisited[i];
+          const dist = distance(current, candidate);
+          // Urgency weighting: Critical overflow prioritized
+          const urgencyWeight = candidate.urgency === 'Critical' ? 0.7 : (candidate.urgency === 'Moderate' ? 0.9 : 1.0);
+          const cost = dist * urgencyWeight;
+
+          if (cost < bestScore) {
+            bestScore = cost;
+            bestIdx = i;
+          }
+        }
+
+        const nextBin = unvisited.splice(bestIdx, 1)[0];
+        const rawDist = distance(current, nextBin).toFixed(2);
+        tour.push(nextBin);
+        addTrace(`> Step ${step}: Selected ${nextBin.name} [${nextBin.urgency}] (${rawDist} km) from ${current.name}`);
+        current = nextBin;
+        step++;
+      }
+
+      // Add return leg to depot
+      tour.push(DEPOT);
+      addTrace(`> Final Leg: Returning to Depot (${distance(current, DEPOT).toFixed(2)} km)`);
+
+      // 2-Opt Optimization local search
+      tour = run2Opt(tour);
+      const optDist = calculateTotalTourDistance(tour);
+      optimizedTour = tour;
+
+      // Update metrics
+      const savedDist = Math.max(0, (naiveDist - optDist)).toFixed(2);
+      const savedPercent = naiveDist > 0 ? (((naiveDist - optDist) / naiveDist) * 100).toFixed(1) : 0;
+
+      document.getElementById('metricNaiveDist').innerText = `${naiveDist} km`;
+      document.getElementById('metricOptDist').innerText = `${optDist} km`;
+      document.getElementById('metricSaved').innerText = `${savedDist} km (${savedPercent}%)`;
+      document.getElementById('statFuelSaved').innerText = `${savedPercent}%`;
+
+      addTrace(`[DAA Complete] Naive: ${naiveDist} km -> Optimized: ${optDist} km. Saved: ${savedDist} km (${savedPercent}%)`);
+
+      drawMapCanvas();
+    }
+
+    function run2Opt(tour) {
+      if (tour.length <= 4) return tour;
+      let bestTour = [...tour];
+      let bestDist = calculateTotalTourDistance(bestTour);
+      let improved = true;
+      let iterations = 0;
+
+      while (improved && iterations < 30) {
+        improved = false;
+        iterations++;
+        for (let i = 1; i < bestTour.length - 2; i++) {
+          for (let j = i + 1; j < bestTour.length - 1; j++) {
+            // Reverse sub-array
+            const newTour = [
+              ...bestTour.slice(0, i),
+              ...bestTour.slice(i, j + 1).reverse(),
+              ...bestTour.slice(j + 1)
+            ];
+            const newDist = calculateTotalTourDistance(newTour);
+            if (newDist < bestDist - 0.01) {
+              bestTour = newTour;
+              bestDist = newDist;
+              improved = true;
+              break;
+            }
+          }
+          if (improved) break;
+        }
+      }
+      return bestTour;
+    }
+
+    function addTrace(text) {
+      const traceContainer = document.getElementById('daaTraceContainer');
+      const div = document.createElement('div');
+      div.className = text.startsWith('[DAA') ? 'text-sky-300 font-semibold' : 'text-slate-300';
+      div.innerText = text;
+      traceContainer.appendChild(div);
+      traceContainer.scrollTop = traceContainer.scrollHeight;
+    }
+
+    // 8. Visual Map Rendering on Canvas
+    function drawMapCanvas(truckPosition = null) {
+      const canvas = document.getElementById('routeCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
+
+      // Coordinate scaling (Coordinates span approx 5.0 to 19.0)
+      const minCoord = 4.0;
+      const maxCoord = 20.0;
+      const mapX = (x) => 30 + ((x - minCoord) / (maxCoord - minCoord)) * (width - 60);
+      const mapY = (y) => height - 30 - ((y - minCoord) / (maxCoord - minCoord)) * (height - 60);
+
+      // Clear & Background
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillRect(0, 0, width, height);
+
+      // Subtle Grid Lines
+      ctx.strokeStyle = "#e2e8f0";
+      ctx.lineWidth = 1;
+      for (let x = 4; x <= 20; x += 2) {
+        ctx.beginPath();
+        ctx.moveTo(mapX(x), 0);
+        ctx.lineTo(mapX(x), height);
+        ctx.stroke();
+      }
+      for (let y = 4; y <= 20; y += 2) {
+        ctx.beginPath();
+        ctx.moveTo(0, mapY(y));
+        ctx.lineTo(width, mapY(y));
+        ctx.stroke();
+      }
+
+      // Draw DAA Optimized Path
+      if (optimizedTour && optimizedTour.length > 1) {
+        ctx.strokeStyle = "#0284c7";
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([6, 4]); // Dashed line for active route
+        ctx.beginPath();
+        ctx.moveTo(mapX(optimizedTour[0].x), mapY(optimizedTour[0].y));
+        for (let i = 1; i < optimizedTour.length; i++) {
+          ctx.lineTo(mapX(optimizedTour[i].x), mapY(optimizedTour[i].y));
+        }
+        ctx.stroke();
+        ctx.setLineDash([]); // Reset dash
+      }
+
+      // Draw Depot
+      const depotPx = mapX(DEPOT.x);
+      const depotPy = mapY(DEPOT.y);
+      ctx.fillStyle = "#0284c7";
+      ctx.beginPath();
+      ctx.arc(depotPx, depotPy, 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 10px Plus Jakarta Sans";
+      ctx.fillText("DEPOT", depotPx - 18, depotPy - 14);
+
+      // Draw Waste Nodes
+      reports.forEach((bin, idx) => {
+        const px = mapX(bin.x);
+        const py = mapY(bin.y);
+
+        ctx.beginPath();
+        ctx.arc(px, py, 7, 0, Math.PI * 2);
+
+        if (bin.status === 'Collected') {
+          ctx.fillStyle = "#10b981"; // Emerald
+        } else if (bin.urgency === 'Critical') {
+          ctx.fillStyle = "#ef4444"; // Rose/Red
+        } else if (bin.urgency === 'Moderate') {
+          ctx.fillStyle = "#f59e0b"; // Amber
+        } else {
+          ctx.fillStyle = "#64748b"; // Slate
+        }
+        ctx.fill();
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Label
+        ctx.fillStyle = "#334155";
+        ctx.font = "9px Plus Jakarta Sans";
+        ctx.fillText(bin.name.split(' ')[0], px + 10, py + 3);
+      });
+
+      // Draw Simulated Truck if in transit
+      if (truckPosition) {
+        const tPx = mapX(truckPosition.x);
+        const tPy = mapY(truckPosition.y);
+        ctx.fillStyle = "#0f172a";
+        ctx.beginPath();
+        ctx.arc(tPx, tPy, 11, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#38bdf8";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // White inner dot
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(tPx, tPy, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // 9. Interactive Garbage Truck Collection Simulator
+    async function simulateGarbageCollectionRun() {
+      if (isSimulationRunning) return;
+      if (!optimizedTour || optimizedTour.length <= 1) {
+        executeDAAOptimizer();
+      }
+      if (optimizedTour.length <= 1) {
+        alert("All bins are already collected! Submit new reports to run simulation.");
+        return;
+      }
+
+      isSimulationRunning = true;
+      const statusText = document.getElementById('truckStatusText');
+      const distText = document.getElementById('truckDistanceText');
+
+      let accumulatedDist = 0;
+
+      for (let i = 0; i < optimizedTour.length - 1; i++) {
+        const fromNode = optimizedTour[i];
+        const toNode = optimizedTour[i + 1];
+        const legDist = distance(fromNode, toNode);
+
+        statusText.innerHTML = `<i data-lucide="truck" class="w-3.5 h-3.5 mr-1.5 text-brand-600 animate-bounce"></i> En Route: ${fromNode.name} &rarr; ${toNode.name}`;
+        lucide.createIcons();
+
+        // Smooth animation interpolation between fromNode and toNode
+        const steps = 25;
+        for (let s = 0; s <= steps; s++) {
+          const progress = s / steps;
+          const currX = fromNode.x + (toNode.x - fromNode.x) * progress;
+          const currY = fromNode.y + (toNode.y - fromNode.y) * progress;
+          
+          drawMapCanvas({ x: currX, y: currY });
+          distText.innerText = `${(accumulatedDist + legDist * progress).toFixed(1)} km`;
+          await new Promise(r => setTimeout(r, 40));
+        }
+
+        accumulatedDist += legDist;
+
+        // If toNode is a waste bin, mark it as Collected
+        if (toNode.id !== DEPOT.id) {
+          const bin = reports.find(r => r.id === toNode.id);
+          if (bin) {
+            bin.status = 'Collected';
+            renderReports();
+          }
+        }
+      }
+
+      statusText.innerHTML = `<i data-lucide="check-circle" class="w-3.5 h-3.5 mr-1.5 text-emerald-600"></i> Tour Finished at Depot! Total: ${accumulatedDist.toFixed(1)} km`;
+      lucide.createIcons();
+      drawMapCanvas();
+      isSimulationRunning = false;
+    }
+
+    // Modal Helpers
+    document.getElementById('btnViewDocs').addEventListener('click', () => {
+      document.getElementById('docsModal').classList.remove('hidden');
+    });
+    function showPythonModal() {
+      document.getElementById('pythonModal').classList.remove('hidden');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    // Initialize application on load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderReports();
+      executeDAAOptimizer();
+    });
+  </script>
+</body>
+</html>
